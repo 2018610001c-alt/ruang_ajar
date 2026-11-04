@@ -178,59 +178,6 @@
     }));
   }
 
-  $('#exportPortfolio').addEventListener('click', () => {
-    const blob = new Blob([JSON.stringify(state.portfolio, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url; anchor.download = 'portofolio-ruang-ajar.json'; anchor.click();
-    URL.revokeObjectURL(url);
-    toast('Daftar portofolio diekspor.');
-  });
-
-  // Assessment on Canva media design. The content is based on the three project units.
-  const questions = [
-    { q: 'Apa tujuan utama membuat LKPD digital di Canva?', options: ['Menambah ornamen sebanyak mungkin', 'Menyajikan instruksi, materi, dan aktivitas secara jelas serta menarik', 'Menggantikan seluruh kegiatan guru', 'Membuat dokumen tanpa tujuan pembelajaran'], answer: 1, explain: 'LKPD digital perlu membantu peserta didik memahami tugas dan mengikuti aktivitas belajar.' },
-    { q: 'Saat memilih template LKPD, hal yang paling perlu dipertimbangkan adalah...', options: ['Warna yang sedang tren saja', 'Jumlah animasi', 'Keterbacaan, kesesuaian isi, dan kebutuhan peserta didik', 'Banyaknya elemen dekoratif'], answer: 2, explain: 'Template adalah titik awal. Desain perlu disesuaikan dengan tujuan dan karakter materi.' },
-    { q: 'Bagaimana cara menambahkan foto atau dokumen milik guru ke desain Canva?', options: ['Melalui menu Unggahan', 'Melalui menu Keluar', 'Dengan mengubah ukuran halaman', 'Dengan menutup desain'], answer: 0, explain: 'Menu Unggahan digunakan untuk memasukkan file milik pengguna ke desain.' },
-    { q: 'Satu prinsip penting saat menyusun presentasi pembelajaran adalah...', options: ['Memuat seluruh naskah pada satu slide', 'Menggunakan banyak jenis huruf', 'Satu ide utama per slide dan visual yang relevan', 'Memakai animasi pada setiap objek'], answer: 2, explain: 'Satu ide utama per slide membantu audiens mengikuti alur dan memahami pesan.' },
-    { q: 'Untuk membuat kuis sederhana dengan alur jawaban benar dan salah pada presentasi, guru dapat...', options: ['Menghubungkan tombol jawaban ke slide umpan balik yang sesuai', 'Menghapus seluruh slide', 'Menambahkan musik pada semua halaman', 'Mengubah presentasi menjadi foto'], answer: 0, explain: 'Tautan antarhalaman dapat digunakan untuk membuat alur pilihan dan umpan balik.' },
-    { q: 'Apa fungsi timeline pada Canva Video Editor?', options: ['Mengatur urutan dan durasi klip serta audio', 'Mengganti nama akun', 'Membuat daftar pustaka otomatis', 'Mengatur izin akses kelas'], answer: 0, explain: 'Timeline membantu mengatur susunan adegan, durasi, dan elemen audio.' },
-    { q: 'Sebelum membagikan video pembelajaran, guru sebaiknya...', options: ['Langsung membagikan tanpa menonton ulang', 'Memeriksa teks, suara, gambar, urutan, dan durasi', 'Menghapus bagian penutup', 'Menggunakan musik apa pun tanpa memeriksa izin'], answer: 1, explain: 'Pratinjau akhir membantu menemukan kesalahan dan memastikan media siap digunakan.' },
-    { q: 'Mengapa guru perlu memperhatikan hak penggunaan gambar, video, dan musik?', options: ['Agar desain selalu lebih berwarna', 'Agar ukuran file lebih kecil', 'Agar penggunaan media menghormati lisensi dan hak cipta', 'Agar semua karya harus berbayar'], answer: 2, explain: 'Guru perlu memilih aset yang boleh digunakan dan mengikuti ketentuan lisensinya.' }
-  ];
-  function renderQuiz() {
-    $('#quizForm').innerHTML = questions.map((question, index) => `<article class="quiz-question" data-question="${index}">
-      <div class="question-top"><span class="question-number">${String(index + 1).padStart(2, '0')}</span><h3>${esc(question.q)}</h3></div>
-      <div class="quiz-options">${question.options.map((option, optionIndex) => `<label class="quiz-option"><input type="radio" name="question-${index}" value="${optionIndex}"><span>${esc(option)}</span></label>`).join('')}</div>
-      <p class="quiz-feedback" hidden></p>
-    </article>`).join('');
-    $('#quizResult').hidden = true;
-  }
-  $('#submitQuiz').addEventListener('click', () => {
-    let score = 0;
-    let unanswered = 0;
-    questions.forEach((question, index) => {
-      const selected = $(`input[name="question-${index}"]:checked`);
-      const card = $(`[data-question="${index}"]`);
-      const feedback = $('.quiz-feedback', card);
-      card.classList.remove('correct', 'incorrect');
-      if (!selected) { unanswered++; feedback.hidden = true; return; }
-      const isCorrect = Number(selected.value) === question.answer;
-      if (isCorrect) score++;
-      card.classList.add(isCorrect ? 'correct' : 'incorrect');
-      feedback.textContent = `${isCorrect ? 'Benar. ' : 'Belum tepat. '}${question.explain}`;
-      feedback.hidden = false;
-    });
-    if (unanswered) { toast(`Masih ada ${unanswered} pertanyaan yang belum dijawab.`); return; }
-    const result = { score, total: questions.length, date: new Date().toISOString() };
-    state.quizResult = result; save('quizResult', result);
-    const percent = Math.round(score / questions.length * 100);
-    const resultBox = $('#quizResult');
-    resultBox.innerHTML = `<h3>${score} dari ${questions.length} benar · ${percent}%</h3><p>${percent >= 75 ? 'Bagus! Anda sudah memahami dasar pembuatan media pembelajaran dengan Canva.' : 'Terus berlatih. Tinjau kembali bagian yang belum tepat, kemudian ulangi evaluasi.'}</p>`;
-    resultBox.hidden = false;
-    resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  });
-  $('#resetQuiz').addEventListener('click', () => { renderQuiz(); toast('Evaluasi siap dikerjakan kembali.'); });
 
   // Glossary search.
   const glossary = [
@@ -277,7 +224,6 @@
 
   // Initialize static UI.
   populatePrograms();
-  renderQuiz();
   renderGlossary();
   renderPortfolio();
 
