@@ -47,7 +47,7 @@
 
   const pages = {
     home: 'Beranda', guide: 'Petunjuk', competency: 'Kompetensi', lkpd: 'LKPD Digital',
-    presentation: 'Presentasi', video: 'Video', evaluation: 'Evaluasi', glossary: 'Glosarium',
+    presentation: 'Presentasi', video: 'Video', glossary: 'Glosarium',
     workflow: 'Alur Belajar', portfolio: 'Hasil Karya', references: 'Referensi'
   };
   const state = {
